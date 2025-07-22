@@ -296,33 +296,38 @@ async def process_msg(c, u, m, d, lt, uid, i):
             await c.edit_message_text(d, p.id, 'Uploading...')
             st = time.time()
 
-            try:
-                if m.video or os.path.splitext(f)[1].lower() == '.mp4':
+                        try:
+                if m.video:
                     mtd = await get_video_metadata(f)
                     dur, h, w = mtd['duration'], mtd['width'], mtd['height']
                     th = await screenshot(f, dur, d)
-                    await c.send_video(tcid, video=f, caption=ft if m.caption else None, 
+                    await c.send_video(tcid, video=f, caption=ft, 
                                     thumb=th, width=w, height=h, duration=dur, 
                                     progress=prog, progress_args=(c, d, p.id, st), 
+                                    reply_to_message_id=rtmid)
+                elif m.document:
+                    await c.send_document(tcid, document=f, caption=ft,
+                                        thumb=th, progress=prog, progress_args=(c, d, p.id, st), 
+                                        reply_to_message_id=rtmid)
+                elif m.audio:
+                    await c.send_audio(tcid, audio=f, caption=ft, 
+                                    thumb=th, progress=prog, progress_args=(c, d, p.id, st), 
+                                    reply_to_message_id=rtmid)
+                elif m.photo:
+                    await c.send_photo(tcid, photo=f, caption=ft, 
+                                    progress=prog, progress_args=(c, d, p.id, st), 
+                                    reply_to_message_id=rtmid)
+                elif m.voice:
+                    await c.send_voice(tcid, f, progress=prog, progress_args=(c, d, p.id, st), 
                                     reply_to_message_id=rtmid)
                 elif m.video_note:
                     await c.send_video_note(tcid, video_note=f, progress=prog, 
                                         progress_args=(c, d, p.id, st), reply_to_message_id=rtmid)
-                elif m.voice:
-                    await c.send_voice(tcid, f, progress=prog, progress_args=(c, d, p.id, st), 
-                                    reply_to_message_id=rtmid)
                 elif m.sticker:
-                    await c.send_sticker(tcid, m.sticker.file_id)
-                elif m.audio:
-                    await c.send_audio(tcid, audio=f, caption=ft if m.caption else None, 
-                                    thumb=th, progress=prog, progress_args=(c, d, p.id, st), 
-                                    reply_to_message_id=rtmid)
-                elif m.photo:
-                    await c.send_photo(tcid, photo=f, caption=ft if m.caption else None, 
-                                    progress=prog, progress_args=(c, d, p.id, st), 
-                                    reply_to_message_id=rtmid)
+                    await c.send_sticker(tcid, m.sticker.file_id, reply_to_message_id=rtmid)
                 else:
-                    await c.send_document(tcid, document=f, caption=ft if m.caption else None, 
+                    # Fallback in case of unexpected media type
+                    await c.send_document(tcid, document=f, caption=ft,
                                         progress=prog, progress_args=(c, d, p.id, st), 
                                         reply_to_message_id=rtmid)
             except Exception as e:
