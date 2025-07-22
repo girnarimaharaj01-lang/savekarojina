@@ -1,7 +1,7 @@
-# Step 1: Python ka version 3.10 ya usse upar ka istemal karein
+# Step 1: Use Python 3.10 or higher
 FROM python:3.10-slim-bullseye
 
-# Step 2: Zaroori packages install karein
+# Step 2: Install necessary packages
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     curl \
@@ -10,22 +10,21 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     bash \
     && rm -rf /var/lib/apt/lists/*
 
-# Step 3: Working directory set karein
+# Step 3: Set working directory
 WORKDIR /app
 
-# Step 4: requirements.txt ko copy karke install karein
+# Step 4: Copy and install requirements
 COPY requirements.txt .
 RUN pip install --no-cache-dir -U -r requirements.txt
 
-# Gunicorn ko install karein (production server ke liye)
+# Install Gunicorn for production
 RUN pip install gunicorn
 
-# Step 5: Baaki saare code ko copy karein
+# Step 5: Copy the rest of the code
 COPY . .
 
-# Step 6: Port expose karein
+# Step 6: Expose port
 EXPOSE 5000
 
-# Step 7: Application ko Gunicorn aur main bot script ke saath start karein
-# Yeh Gunicorn web server ko background mein chalayega aur main.py ko foreground mein
+# Step 7: Start the app with Gunicorn and the main bot script
 CMD gunicorn app:app --bind 0.0.0.0:5000 & python3 main.py
