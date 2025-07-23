@@ -297,7 +297,7 @@ async def process_msg(c, u, m, d, lt, uid, i):
             st = time.time()
 
             try:
-                if m.video:
+                if m.video or os.path.splitext(f)[1].lower() == '.mp4':
                     mtd = await get_video_metadata(f)
                     dur, h, w = mtd['duration'], mtd['width'], mtd['height']
                     th = await screenshot(f, dur, d)
