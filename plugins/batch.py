@@ -198,6 +198,8 @@ async def send_direct(c, m, tcid, ft=None, rtmid=None):
         print(f'Direct send error: {e}')
         return False
 
+# ... [rest of your imports and code remain unchanged] ...
+
 async def process_msg(c, u, m, d, lt, uid, i):
     try:
         cfg_chat = await get_user_data_key(d, 'chat_id', None)
@@ -229,21 +231,22 @@ async def process_msg(c, u, m, d, lt, uid, i):
                 file_name = m.video.file_name
                 if not file_name:
                     file_name = f"{time.time()}.mp4"
-                    c_name = sanitize(file_name)
+                c_name = sanitize(file_name)
             elif m.audio:
                 file_name = m.audio.file_name
                 if not file_name:
                     file_name = f"{time.time()}.mp3"
-                    c_name = sanitize(file_name)
+                c_name = sanitize(file_name)
             elif m.document:
-    file_name = m.document.file_name
-    if not file_name:
-        # PDF mimetype handle
-        if hasattr(m.document, "mime_type") and m.document.mime_type == "application/pdf":
-            file_name = f"{time.time()}.pdf"
-        else:
-            file_name = f"{time.time()}"
-    c_name = sanitize(file_name)
+                file_name = m.document.file_name
+                if not file_name:
+                    # --- PDF extension fix start ---
+                    if hasattr(m.document, "mime_type") and m.document.mime_type == "application/pdf":
+                        file_name = f"{time.time()}.pdf"
+                    else:
+                        file_name = f"{time.time()}"
+                    # --- PDF extension fix end ---
+                c_name = sanitize(file_name)
             elif m.photo:
                 file_name = f"{time.time()}.jpg"
                 c_name = sanitize(file_name)
@@ -301,6 +304,7 @@ async def process_msg(c, u, m, d, lt, uid, i):
             st = time.time()
 
             try:
+                # --- PDF upload handling is covered by send_document ---
                 if m.video or os.path.splitext(f)[1].lower() == '.mp4':
                     mtd = await get_video_metadata(f)
                     dur, h, w = mtd['duration'], mtd['width'], mtd['height']
@@ -344,6 +348,8 @@ async def process_msg(c, u, m, d, lt, uid, i):
             return 'Sent.'
     except Exception as e:
         return f'Error: {str(e)[:50]}'
+
+# ... [rest of your code remains unchanged] ...
 
 @X.on_message(filters.command(['batch', 'single']))
 async def process_cmd(c, m):
