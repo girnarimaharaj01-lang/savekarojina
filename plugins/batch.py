@@ -236,10 +236,14 @@ async def process_msg(c, u, m, d, lt, uid, i):
                     file_name = f"{time.time()}.mp3"
                     c_name = sanitize(file_name)
             elif m.document:
-                file_name = m.document.file_name
-                if not file_name:
-                    file_name = f"{time.time()}"
-                    c_name = sanitize(file_name)
+    file_name = m.document.file_name
+    if not file_name:
+        # PDF mimetype handle
+        if hasattr(m.document, "mime_type") and m.document.mime_type == "application/pdf":
+            file_name = f"{time.time()}.pdf"
+        else:
+            file_name = f"{time.time()}"
+    c_name = sanitize(file_name)
             elif m.photo:
                 file_name = f"{time.time()}.jpg"
                 c_name = sanitize(file_name)
