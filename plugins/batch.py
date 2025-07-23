@@ -296,7 +296,7 @@ async def process_msg(c, u, m, d, lt, uid, i):
             await c.edit_message_text(d, p.id, 'Uploading...')
             st = time.time()
 
-                        try:
+            try:
                 if m.video:
                     mtd = await get_video_metadata(f)
                     dur, h, w = mtd['duration'], mtd['width'], mtd['height']
@@ -326,7 +326,6 @@ async def process_msg(c, u, m, d, lt, uid, i):
                 elif m.sticker:
                     await c.send_sticker(tcid, m.sticker.file_id, reply_to_message_id=rtmid)
                 else:
-                    # Fallback in case of unexpected media type
                     await c.send_document(tcid, document=f, caption=ft,
                                         progress=prog, progress_args=(c, d, p.id, st), 
                                         reply_to_message_id=rtmid)
