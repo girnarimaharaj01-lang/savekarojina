@@ -314,37 +314,98 @@ async def process_msg(c, u, m, d, lt, uid, i):
                                     thumb=th, progress=prog, progress_args=(c, d, p.id, st), 
                                     reply_to_message_id=rtmid)
                 elif m.photo:
-                    await c.send_photo(tcid, photo=f, caption=ft, 
-                                    progress=prog, progress_args=(c, d, p.id, st), 
-                                    reply_to_message_id=rtmid)
-                elif m.voice:
-                    await c.send_voice(tcid, f, progress=prog, progress_args=(c, d, p.id, st), 
-                                    reply_to_message_id=rtmid)
-                elif m.video_note:
-                    await c.send_video_note(tcid, video_note=f, progress=prog, 
-                                        progress_args=(c, d, p.id, st), reply_to_message_id=rtmid)
-                elif m.sticker:
-                    await c.send_sticker(tcid, m.sticker.file_id, reply_to_message_id=rtmid)
-                else:
-                    await c.send_document(tcid, document=f, caption=ft,
-                                        progress=prog, progress_args=(c, d, p.id, st), 
-                                        reply_to_message_id=rtmid)
-            except Exception as e:
-                await c.edit_message_text(d, p.id, f'Upload failed: {str(e)[:30]}')
-                if os.path.exists(f): os.remove(f)
-                return 'Failed.'
+async def process_msg(c, u, m, d, lt, uid, i):
+    try:
+        cfg_chat = await get_user_data_key(d, 'chat_id', None)
+        tcid = d
+        rtmid = None
+        if cfg_chat:
+            if '/' in cfg_chat:
+                parts = cfg_chat.split('/', 1)
+                tcid = int(parts[0])
+                rtmid = int(parts[1]) if len(parts) > 1 else None
+            else:
+                tcid = int(cfg_chat)
+        
+        if m.media:
+            orig_text = m.caption.markdown if m.caption else ''
+            proc_text = await process_text_with_rules(d, orig_text)
+            user_cap = await get_user_data_key(d, 'caption', '')
+            ft = f'{proc_text}\n\n{user_cap}' if proc_text and user_cap else user_cap if user_cap else proc_text
             
-            os.remove(f)
+            if lt == 'public' and not emp.get(i, False):
+                if await send_direct(c, m, tcid, ft, rtmid):
+                    return 'Sent directly.'
+
+            st = time.time()
+            p = await c.send_message(d, 'Downloading...')
+
+            file_name = getattr(m, m.media.value).file_name if getattr(m, m.media.value).file_name else f"{time.time()}"
+            c_name = sanitize(file_name)
+    
+            f = await u.download_media(m, file_name=c_name, progress=prog, progress_args=(c, d, p.id, st))
+            
+            if not f:
+                await c.edit_message_text(d, p.id, 'Download failed.')
+                return 'Download failed.'
+            
+            await c.edit_message_text(d, p.id, 'Renaming...')
+            if getattr(getattr(m, m.media.value), "file_name", None):
+                 f = await rename_file(f, d, p)
+            
+            fsize = os.path.getsize(f) / (1024 * 1024 * 1024) if os.path.exists(f) else 0
+            th = thumbnail(d)
+            
+            # 4GB Upload Logic
+            if fsize > 2 and Y:
+                st = time.time()
+                await c.edit_message_text(d, p.id, 'File > 2GB. Using premium uploader...')
+                await upd_dlg(Y)
+                mtd = await get_video_metadata(f)
+                dur, h, w = mtd['duration'], mtd['width'], mtd['height']
+                th_lg = await screenshot(f, dur, d)
+                
+                sent = await Y.send_document(LOG_GROUP, f, thumb=th_lg, caption=ft, reply_to_message_id=rtmid, progress=prog, progress_args=(c, d, p.id, st))
+                await c.copy_message(d, LOG_GROUP, sent.id)
+                os.remove(f)
+                await c.delete_messages(d, p.id)
+                return 'Done (Large file).'
+            
+            await c.edit_message_text(d, p.id, 'Uploading...')
+            st = time.time()
+
+            # Main Upload Logic
+            if m.video:
+                mtd = await get_video_metadata(f)
+                await c.send_video(tcid, video=f, caption=ft, thumb=th, width=mtd['width'], height=mtd['height'], duration=mtd['duration'], progress=prog, progress_args=(c, d, p.id, st), reply_to_message_id=rtmid)
+            elif m.document:
+                await c.send_document(tcid, document=f, caption=ft, thumb=th, progress=prog, progress_args=(c, d, p.id, st), reply_to_message_id=rtmid)
+            elif m.photo:
+                await c.send_photo(tcid, photo=f, caption=ft, progress=prog, progress_args=(c, d, p.id, st), reply_to_message_id=rtmid)
+            elif m.audio:
+                 await c.send_audio(tcid, audio=f, caption=ft, thumb=th, progress=prog, progress_args=(c, d, p.id, st), reply_to_message_id=rtmid)
+            elif m.voice:
+                await c.send_voice(tcid, f, progress=prog, progress_args=(c, d, p.id, st), reply_to_message_id=rtmid)
+            elif m.video_note:
+                await c.send_video_note(tcid, video_note=f, progress=prog, progress_args=(c, d, p.id, st), reply_to_message_id=rtmid)
+            elif m.sticker:
+                await c.send_sticker(tcid, m.sticker.file_id, reply_to_message_id=rtmid)
+            
+            if os.path.exists(f): os.remove(f)
+            if os.path.exists(th): os.remove(th)
             await c.delete_messages(d, p.id)
-            
             return 'Done.'
             
         elif m.text:
             await c.send_message(tcid, text=m.text.markdown, reply_to_message_id=rtmid)
             return 'Sent.'
+            
     except Exception as e:
-        return f'Error: {str(e)[:50]}'
-
+        # Yeh line error ko handle karegi aur 'NoneType' error nahi aane degi
+        return f'Skipped: {str(e)[:50]}'
+    
+    # Yeh fallback hai, agar upar kuch bhi return na hua ho
+    return 'Skipped: No media found.'
 @X.on_message(filters.command(['batch', 'single']))
 async def process_cmd(c, m):
     uid = m.from_user.id
