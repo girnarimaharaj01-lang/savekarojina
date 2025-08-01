@@ -2,15 +2,17 @@
 # Licensed under the GNU General Public License v3.0.  
 # See LICENSE file in the repository root for full license text.
 
+# MODIFIED: Random image selection has been added.
+
 from shared_client import client as bot_client, app
 from telethon import events
 from datetime import timedelta
-from config import OWNER_ID
+from config import OWNER_ID, JOIN_LINK as JL, ADMIN_CONTACT as AC
 from utils.func import add_premium_user, is_private_chat
 from pyrogram import filters
 from pyrogram.types import InlineKeyboardButton as IK, InlineKeyboardMarkup as IKM
-from config import OWNER_ID, JOIN_LINK as JL , ADMIN_CONTACT as AC
 import base64 as spy
+import random  # <-- Yahan random module import kiya gaya hai
 from utils.func import a1, a2, a3, a4, a5, a7, a8, a9, a10, a11
 from plugins.start import subscribe
 
@@ -69,37 +71,38 @@ Subscription valid until: {formatted_expiry} (IST)"""
         await event.respond(f'Error: {str(e)}')
         
         
-attr1 = spy.b64encode("photo".encode()).decode()
-attr2 = spy.b64encode("file_id".encode()).decode()
-
+# Obfuscated /start command handler (Now Modified)
 @app.on_message(filters.command(spy.b64decode(a5.encode()).decode()))
 async def start_handler(client, message):
     subscription_status = await subscribe(client, message)
     if subscription_status == 1:
         return
 
-    b1 = spy.b64decode(a1).decode()
-    b2 = int(spy.b64decode(a2).decode())
-    b3 = spy.b64decode(a3).decode()
-    b4 = spy.b64decode(a4).decode()
-    b6 = spy.b64decode(a7).decode()
-    b7 = spy.b64decode(a8).decode()
-    b8 = spy.b64decode(a9).decode()
-    b9 = spy.b64decode(a10).decode()
-    b10 = spy.b64decode(a11).decode()
+    # Decode the necessary text content from utils/func.py
+    caption_text = spy.b64decode(a7).decode()
+    button1_text = spy.b64decode(a8).decode()
+    button2_text = spy.b64decode(a9).decode()
 
-    tm = await getattr(app, b3)(b1, b2)
+    # List of your image URLs
+    image_links = [
+        "https://s.tfrbot.com/h/Vf6F3e",
+        "https://s.tfrbot.com/h/sRMf7S",
+        "https://s.tfrbot.com/h/g5lIWO",
+        "https://s.tfrbot.com/h/QCvWqP"
+    ]
 
-    pb = getattr(tm, spy.b64decode(attr1.encode()).decode())
-    fd = getattr(pb, spy.b64decode(attr2.encode()).decode())
+    # Select one image randomly from the list
+    random_image_url = random.choice(image_links)
 
-    kb = IKM([
-        [IK(b7, url=JL)],
-        [IK(b8, url=AC)]
+    # Create the keyboard with buttons
+    keyboard_markup = IKM([
+        [IK(button1_text, url=JL)],
+        [IK(button2_text, url=AC)]
     ])
 
-    await getattr(message, b4)(
-        fd,
-        caption=b6,
-        reply_markup=kb
+    # Send the randomly selected photo with caption and buttons
+    await message.reply_photo(
+        photo=random_image_url,
+        caption=caption_text,
+        reply_markup=keyboard_markup
     )
