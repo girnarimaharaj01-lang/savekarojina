@@ -159,7 +159,7 @@ async def get_uclient(uid):
             return ubot if ubot else Y
     return Y
 
-async def prog(c, t, C, h, m, st):
+async def prog(c, t, C, h, m, st, topic):
     global P
     p = c / t * 100
     interval = 10 if t >= 100 * 1024 * 1024 else 20 if t >= 50 * 1024 * 1024 else 30 if t >= 10 * 1024 * 1024 else 50
@@ -171,7 +171,7 @@ async def prog(c, t, C, h, m, st):
         bar = '🟢' * int(p / 10) + '🔴' * (10 - int(p / 10))
         speed = c / (time.time() - st) / (1024 * 1024) if time.time() > st else 0
         eta = time.strftime('%M:%S', time.gmtime((t - c) / (speed * 1024 * 1024))) if speed > 0 else '00:00'
-        await C.edit_message_text(h, m, f"__**Processing...**__\n\n{bar}\n\n⚡**__Completed__**: {c_mb:.2f} MB / {t_mb:.2f} MB\n📊 **__Done__**: {p:.2f}%\n🚀 **__Speed__**: {speed:.2f} MB/s\n⏳ **__ETA__**: {eta}\n\n**__Powered by <a href='https://t.me/kundan_yadav_bot'>𝕂𝕦𝕟𝕕𝕒𝕟 𝕐𝕒𝕕𝕒𝕧😎</a>__**")
+        await C.edit_message_text(h, m, f"__**{topic}...**__\n\n{bar}\n\n⚡**__Completed__**: {c_mb:.2f} MB / {t_mb:.2f} MB\n📊 **__Done__**: {p:.2f}%\n🚀 **__Speed__**: {speed:.2f} MB/s\n⏳ **__ETA__**: {eta}\n\n**__Powered by <a href='https://t.me/kundan_yadav_bot'>𝕂𝕦𝕟𝕕𝕒𝕟 𝕐𝕒𝕕𝕒𝕧😎</a>__**")
         if p >= 100: P.pop(m, None)
 
 async def send_direct(c, m, tcid, ft=None, rtmid=None):
@@ -251,7 +251,7 @@ async def process_msg(c, u, m, d, lt, uid, i):
                 file_name = f"{time.time()}.jpg"
                 c_name = sanitize(file_name)
     
-            f = await u.download_media(m, file_name=c_name, progress=prog, progress_args=(c, d, p.id, st))
+            f = await u.download_media(m, file_name=c_name, progress=prog, progress_args=(c, d, p.id, st, "Downloading"))
             
             if not f:
                 await c.edit_message_text(d, p.id, 'Failed.')
@@ -288,11 +288,11 @@ async def process_msg(c, u, m, d, lt, uid, i):
                                         height=h if mtype == 'video' else None,
                                         width=w if mtype == 'video' else None,
                                         caption=ft if m.caption and mtype not in ['video_note', 'voice'] else None, 
-                                        reply_to_message_id=rtmid, progress=prog, progress_args=(c, d, p.id, st))
+                                        reply_to_message_id=rtmid, progress=prog, progress_args=(c, d, p.id, st, "Uploading"))
                         break
                 else:
                     sent = await Y.send_document(LOG_GROUP, f, thumb=th, caption=ft if m.caption else None,
-                                                reply_to_message_id=rtmid, progress=prog, progress_args=(c, d, p.id, st))
+                                                reply_to_message_id=rtmid, progress=prog, progress_args=(c, d, p.id, st, "Uploading"))
                 
                 await c.copy_message(d, LOG_GROUP, sent.id)
                 os.remove(f)
@@ -311,27 +311,27 @@ async def process_msg(c, u, m, d, lt, uid, i):
                     th = await screenshot(f, dur, d)
                     await c.send_video(tcid, video=f, caption=ft if m.caption else None, 
                                     thumb=th, width=w, height=h, duration=dur, 
-                                    progress=prog, progress_args=(c, d, p.id, st), 
+                                    progress=prog, progress_args=(c, d, p.id, st, "Uploading"), 
                                     reply_to_message_id=rtmid)
                 elif m.video_note:
                     await c.send_video_note(tcid, video_note=f, progress=prog, 
-                                        progress_args=(c, d, p.id, st), reply_to_message_id=rtmid)
+                                        progress_args=(c, d, p.id, st, "Uploading"), reply_to_message_id=rtmid)
                 elif m.voice:
-                    await c.send_voice(tcid, f, progress=prog, progress_args=(c, d, p.id, st), 
+                    await c.send_voice(tcid, f, progress=prog, progress_args=(c, d, p.id, st, "Uploading"), 
                                     reply_to_message_id=rtmid)
                 elif m.sticker:
                     await c.send_sticker(tcid, m.sticker.file_id)
                 elif m.audio:
                     await c.send_audio(tcid, audio=f, caption=ft if m.caption else None, 
-                                    thumb=th, progress=prog, progress_args=(c, d, p.id, st), 
+                                    thumb=th, progress=prog, progress_args=(c, d, p.id, st, "Uploading"), 
                                     reply_to_message_id=rtmid)
                 elif m.photo:
                     await c.send_photo(tcid, photo=f, caption=ft if m.caption else None, 
-                                    progress=prog, progress_args=(c, d, p.id, st), 
+                                    progress=prog, progress_args=(c, d, p.id, st, "Uploading"), 
                                     reply_to_message_id=rtmid)
                 else:
                     await c.send_document(tcid, document=f, caption=ft if m.caption else None, 
-                                        progress=prog, progress_args=(c, d, p.id, st), 
+                                        progress=prog, progress_args=(c, d, p.id, st, "Uploading"), 
                                         reply_to_message_id=rtmid)
             except Exception as e:
                 await c.edit_message_text(d, p.id, f'Upload failed: {str(e)[:30]}')
@@ -514,4 +514,3 @@ async def text_handler(c, m):
         finally:
             await remove_active_batch(uid)
             Z.pop(uid, None)
-
