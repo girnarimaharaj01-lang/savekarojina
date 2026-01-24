@@ -85,10 +85,9 @@ async def start_handler(client, message):
 
     # List of your image URLs
     image_links = [
-        "https://s.tfrbot.com/h/Vf6F3e",
-        "https://s.tfrbot.com/h/sRMf7S",
-        "https://s.tfrbot.com/h/g5lIWO",
-        "https://s.tfrbot.com/h/QCvWqP"
+        "https://babubhaikundan.pages.dev/Assets/logo/bbk.png",
+        "https://babubhaikundan.pages.dev/Assets/logo/hacker.png",
+        "https://babubhaikundan.pages.dev/Assets/logo/1.jpg"
     ]
 
     # Select one image randomly from the list
@@ -106,3 +105,4 @@ async def start_handler(client, message):
         caption=caption_text,
         reply_markup=keyboard_markup
     )
+
