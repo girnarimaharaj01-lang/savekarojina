@@ -423,8 +423,10 @@ async def text_handler(c, m):
             return
         
         uc = await get_uclient(uid)
+        if not uc and lt == 'public':
+            uc = ubot
         if not uc:
-            await pt.edit('Cannot proceed without user client.')
+            await pt.edit('🚫 Private channel ke liye /login jaruri hai.')
             Z.pop(uid, None)
             return
             
@@ -465,8 +467,11 @@ async def text_handler(c, m):
         uc = await get_uclient(uid)
         ubot = UB.get(uid)
         
+        if not uc and lt == 'public':
+            uc = ubot
+        
         if not uc or not ubot:
-            await pt.edit('Missing client setup')
+            await pt.edit('❌ Setup incomplete. (Private channels ke liye /login karein)')
             Z.pop(uid, None)
             return
             
@@ -514,3 +519,4 @@ async def text_handler(c, m):
         finally:
             await remove_active_batch(uid)
             Z.pop(uid, None)
+
