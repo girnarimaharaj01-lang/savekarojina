@@ -18,7 +18,7 @@ async def subscribe(app, message):
         except UserNotParticipant:
             link = await app.export_chat_invite_link(FORCE_SUB)
             caption = f"Join our channel to use the bot"
-            await message.reply_photo(photo="https://s.tfrbot.com/h/g5lIWO",caption=caption, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Developer💀...", url=f"{link}")]]))
+            await message.reply_photo(photo="https://babubhaikundan.pages.dev/Assets/logo/bbk.png",caption=caption, reply_markup=InlineKeyboardMarkup([[InlineKeyboardButton("Developer💀...", url=f"{link}")]]))
             return 1
         except Exception as ggn:
             await message.reply_text(f"Something Went Wrong. Contact admins... with following message {ggn}")
@@ -233,3 +233,4 @@ async def see_terms(client, callback_query):
     await callback_query.message.edit_text(terms_text, reply_markup=buttons)
  
  
+
