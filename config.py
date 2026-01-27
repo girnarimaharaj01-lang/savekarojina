@@ -20,9 +20,9 @@ YTUB_COOKIES = """
 API_ID = os.getenv("API_ID", "29777466")
 API_HASH = os.getenv("API_HASH", "a04b3df726520026f207079aec2f9879")
 BOT_TOKEN = os.getenv("BOT_TOKEN", "8031981205:AAGz3oAzc7hvRHViOirPutAJeiP3t4lvu40")
-MONGO_DB = os.getenv("MONGO_DB", "mongodb+srv://nitinkumarrayji:kDa1SZhovodoXIHB@cluster0.pmdssa7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")
+MONGO_DB = os.getenv("MONGO_DB", "mongodb+srv://girnarimaharaj01_db_user:KsxBY4eoUBwRKXXw@cluster0.6firafk.mongodb.net/?appName=Cluster0")
 OWNER_ID = list(map(int, os.getenv("OWNER_ID", "8399557684").split())) # list seperated via space
-DB_NAME = os.getenv("DB_NAME", "Cluster0")
+DB_NAME = os.getenv("DB_NAME", "girnarimaharaj01_db_user")
 STRING = os.getenv("STRING", None) # optional
 LOG_GROUP = int(os.getenv("LOG_GROUP", "-3")) # optional with -100
 FORCE_SUB = int(os.getenv("FORCE_SUB", "-1")) # optional with -100
@@ -34,6 +34,7 @@ FREEMIUM_LIMIT = int(os.getenv("FREEMIUM_LIMIT", "0"))
 PREMIUM_LIMIT = int(os.getenv("PREMIUM_LIMIT", "500"))
 JOIN_LINK = os.getenv("JOIN_LINK", "https://t.me/Nikhilbhaiiibot") # this link for start command message
 ADMIN_CONTACT = os.getenv("ADMIN_CONTACT", "https://t.me/Nikhilbhaiiibot")
+
 
 
 
