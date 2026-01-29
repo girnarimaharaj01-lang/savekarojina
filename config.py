@@ -24,8 +24,8 @@ MONGO_DB = os.getenv("MONGO_DB", "mongodb+srv://girnarimaharaj01_db_user:KsxBY4e
 OWNER_ID = list(map(int, os.getenv("OWNER_ID", "8399557684").split())) # list seperated via space
 DB_NAME = os.getenv("DB_NAME", "girnarimaharaj01_db_user")
 STRING = os.getenv("STRING", None) # optional
-LOG_GROUP = int(os.getenv("LOG_GROUP", "-3")) # optional with -100
-FORCE_SUB = int(os.getenv("FORCE_SUB", "-1")) # optional with -100
+LOG_GROUP = int(os.getenv("LOG_GROUP", "-1003164986113")) # optional with -100
+FORCE_SUB = int(os.getenv("FORCE_SUB", "-1003164986113")) # optional with -100
 MASTER_KEY = os.getenv("MASTER_KEY", "gK8HzLfT9QpViJcYeB5wRa3DmN7P2xUq") # for session encryption
 IV_KEY = os.getenv("IV_KEY", "s7Yx5CpVmE3F") # for decryption
 YT_COOKIES = os.getenv("YT_COOKIES", YTUB_COOKIES)
@@ -34,6 +34,7 @@ FREEMIUM_LIMIT = int(os.getenv("FREEMIUM_LIMIT", "0"))
 PREMIUM_LIMIT = int(os.getenv("PREMIUM_LIMIT", "500"))
 JOIN_LINK = os.getenv("JOIN_LINK", "https://t.me/Nikhilbhaiiibot") # this link for start command message
 ADMIN_CONTACT = os.getenv("ADMIN_CONTACT", "https://t.me/Nikhilbhaiiibot")
+
 
 
 
