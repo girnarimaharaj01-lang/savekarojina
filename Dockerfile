@@ -1,4 +1,4 @@
-FROM python:3.11-slim-bookworm
+FROM python:3.10.8-slim-buster
 
 ENV TZ=Asia/Dhaka
 ARG DEBIAN_FRONTEND=noninteractive
@@ -17,4 +17,5 @@ RUN pip install -U -r requirements.txt
 
 COPY . /app
 
-CMD ["python3", "main.py"]
+CMD flask run -h 0.0.0.0 -p 5000 & python3 main.py
+
