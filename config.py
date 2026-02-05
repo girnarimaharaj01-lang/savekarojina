@@ -1,44 +1,41 @@
-# Copyright (c) 2025 devgagan : https://github.com/devgaganin.  
-# Licensed under the GNU General Public License v3.0.  
-# See LICENSE file in the repository root for full license text.
 
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
+# Bot Token
+BOT_TOKEN = os.environ.get("BOT_TOKEN", "8158405668:AAHJYP5Bc8OQl7-0IXPSx8RPppty16wjLdQ")
 
-# VPS --- FILL COOKIES 🍪 in """ ... """ 
+# Your API ID & Hash
+API_ID = int(os.environ.get("API_ID", "29777466"))
+API_HASH = os.environ.get("API_HASH", "a04b3df726520026f207079aec2f9879")
 
-INST_COOKIES = """
-# wtite up here insta cookies
-"""
+# Your Owner / Admin Id For Broadcast 
+ADMINS = int(os.environ.get("ADMINS", "8399557684"))
 
-YTUB_COOKIES = """
-# write here yt cookies
-"""
+# Your Mongodb Database Url
+DB_URI = os.environ.get("DB_URI", "mongodb+srv://girnarimaharaj01_db_user:KsxBY4eoUBwRKXXw@cluster0.6firafk.mongodb.net/?appName=Cluster0")
+DB_NAME = os.environ.get("DB_NAME", "girnarimaharaj01_db_user")
 
-API_ID = os.getenv("API_ID", "29777466")
-API_HASH = os.getenv("API_HASH", "a04b3df726520026f207079aec2f9879")
-BOT_TOKEN = os.getenv("BOT_TOKEN", "8158405668:AAHJYP5Bc8OQl7-0IXPSx8RPppty16wjLdQ")
-MONGO_DB = os.getenv("MONGO_DB", "mongodb+srv://girnarimaharaj01_db_user:KsxBY4eoUBwRKXXw@cluster0.6firafk.mongodb.net/?appName=Cluster0")
-OWNER_ID = list(map(int, os.getenv("OWNER_ID", "8399557684").split())) # list seperated via space
-DB_NAME = os.getenv("DB_NAME", "girnarimaharaj01_db_user")
-STRING = os.getenv("STRING", None) # optional
-LOG_GROUP = int(os.getenv("LOG_GROUP", "")) # optional with -100
-FORCE_SUB = int(os.getenv("FORCE_SUB", "")) # optional with -100
-MASTER_KEY = os.getenv("MASTER_KEY", "gK8HzLfT9QpViJcYeB5wRa3DmN7P2xUq") # for session encryption
-IV_KEY = os.getenv("IV_KEY", "s7Yx5CpVmE3F") # for decryption
-YT_COOKIES = os.getenv("YT_COOKIES", YTUB_COOKIES)
-INSTA_COOKIES = os.getenv("INSTA_COOKIES", INST_COOKIES)
-FREEMIUM_LIMIT = int(os.getenv("FREEMIUM_LIMIT", "0"))
-PREMIUM_LIMIT = int(os.getenv("PREMIUM_LIMIT", "500"))
-JOIN_LINK = os.getenv("JOIN_LINK", "https://t.me/Nikhilbhaiiibot") # this link for start command message
-ADMIN_CONTACT = os.getenv("ADMIN_CONTACT", "https://t.me/Nikhilbhaiiibot")
+# Log Channel to Track New Users 
+LOG_CHANNEL = int(os.environ.get("LOG_CHANNEL", "-1003164986113"))
 
+# If You Want Error Message In Your Personal Message Then Turn It True Else If You Don't Want Then False
+ERROR_MESSAGE = bool(os.environ.get('ERROR_MESSAGE', True))
 
+# Keep-Alive URL
+KEEP_ALIVE_URL = os.environ.get("KEEP_ALIVE_URL", "https://t.me/+Swsed-KYVMJjYzdl")
 
+# Start pic on /start 
+START_PIC = os.environ.get("START_PIC", "https://files.catbox.moe/krxuel.jpg")
 
-
+# -------------------
+# VERIFICATION CONFIG
+# -------------------
+VERIFY = bool(os.environ.get('VERIFY', True)) # Set True to enable
+VERIFY_SHORTLINK_URL = os.environ.get('VERIFY_SHORTLINK_URL', 'ShrinkMe.io') # Your Shortener Domain
+VERIFY_SHORTLINK_API = os.environ.get('VERIFY_SHORTLINK_API', '') # Your Shortener API Key
+VERIFY_TUTORIAL = os.environ.get('VERIFY_TUTORIAL', 'https://t.me/your_tutorial_link') # Tutorial Link
 
 
-
+# MyselfNeon
+# Don't Remove Credit 🥺
+# Telegram Channel @NeonFiles
