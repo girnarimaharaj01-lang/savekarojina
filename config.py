@@ -2,10 +2,10 @@
 # Licensed under the GNU General Public License v3.0.  
 # See LICENSE file in the repository root for full license text.
 
-import os
-from dotenv import load_dotenv
 
-load_dotenv()
+
+from os import getenv
+
 
 # VPS --- FILL COOKIES 🍪 in """ ... """ 
 
@@ -34,6 +34,7 @@ FREEMIUM_LIMIT = int(os.getenv("FREEMIUM_LIMIT", "0"))
 PREMIUM_LIMIT = int(os.getenv("PREMIUM_LIMIT", "500"))
 JOIN_LINK = os.getenv("JOIN_LINK", "https://t.me/Nikhilbhaiiibot") # this link for start command message
 ADMIN_CONTACT = os.getenv("ADMIN_CONTACT", "https://t.me/Nikhilbhaiiibot")
+
 
 
 
